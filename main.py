@@ -1,23 +1,28 @@
 import requests
 from bs4 import BeautifulSoup
+import datetime
+import csv
 
-URL = "https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick"
+URL = "https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard"
 page = requests.get(URL)
 soup = BeautifulSoup(page.text, 'html.parser')
-overall_reported = soup.find_all("table")[1]
-headers = []
-header_search = overall_reported.find_all("th")
-for header in header_search:
-    headers.append(header.text)
+overall_reported = soup.find_all("table")[0]
 
-print(headers)
+date_updated = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+table_data = [str(date_updated)]
 
-table_data = []
+for rows in overall_reported.find_all("tr")[1:]:
+    num = rows.find_all("td")
+    table_data.append(num[1].get_text())
 
-for items in overall_reported.find_all("tr"):
-    row = {}
-    for td, th in zip(items.find_all("td"), headers):
-        row[th] = td.text.replace('\n', '').strip()
-    table_data.append(row)
-
+positivity_rate = "{:.3%}".format(int(table_data[4]) / 62800)
+table_data.append(positivity_rate)
 print(table_data)
+
+
+with open("SFUSD_Covid_Cases.csv", 'a', newline='') as obj:
+    csv_writer = csv.writer(obj)
+    csv_writer.writerow(table_data)
+
+
+
