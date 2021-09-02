@@ -1,0 +1,19 @@
+.style-table {
+    margin: 5%;
+    width: 60%;
+    height: 298px;
+    overflow: auto;
+    text-align: center;
+}
+.table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border: 2px solid black;
+}
+
+.vertical-scrollable > tbody > tr > td{
+      position: absolute;
+      top: 120px;
+      bottom: 100px;
+      left: 180px;
+      width: 50%;
+      overflow-y: scroll;
+}
