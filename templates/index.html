@@ -6,9 +6,12 @@
     <title>SFUSD COVID Cases Tracker</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
 </head>
 <body>
-    <div class="table-responsive vertical-scrollable">
+    <h1>Cumulative COVID Cases in SFUSD (since August 16)</h1>
+    <div class="vertical-scrollable style-table">
         <table class="table table-striped table-bordered">
           <tr class="table-primary">
             <th scope="col">Time Updated</th>
@@ -16,6 +19,7 @@
             <th scope="col">Student/Family Self Reported</th>
             <th scope="col">COLOR Testing Reported</th>
             <th scope="col">Total Reported</th>
+            <th scope="col"># of New Cases</th>
           </tr>
             {% for i in dict_list %}
                 <tr scope="row">
@@ -24,9 +28,47 @@
                     <td>{{ i["student"] }}</td>
                     <td>{{ i["color"] }}</td>
                     <td>{{ i["total"] }}</td>
+                    <td>{{ i["new_cases"] }}</td>
                 </tr>
             {% endfor %}
         </table>
     </div>
+    <canvas id="covid_graph" width="700" height="700"></canvas>
+    <script>
+        var chart = document.getElementById("covid_graph");
+        var line_graph = new Chart(chart, {
+            type: "line",
+            data: {
+                labels: [
+                    {% for i in graph_list %}
+                        "{{ i['time'] }}",
+                    {% endfor %}
+                ],
+                datasets: [{
+                  label: "Number of Cases",
+                  borderColor: "#3e95cd",
+                  data: [
+                    {% for i in graph_list %}
+                       "{{ i['total'] }}",
+                      {% endfor %}
+                     ]
+                  }]
+            },
+            options: {
+                responsive: false,
+                tooltips: {
+                    mode: 'x-axis'
+                },
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            display: false
+                        }
+                    }]
+                }
+            }
+
+        });
+    </script>
 </body>
 </html>
