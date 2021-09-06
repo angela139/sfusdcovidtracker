@@ -6,8 +6,7 @@
     <title>SFUSD COVID Cases Tracker</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 <body>
     <h1>Cumulative COVID Cases in SFUSD (since August 16)</h1>
@@ -33,6 +32,8 @@
             {% endfor %}
         </table>
     </div>
+    <a href="https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard" target="_blank">
+            Data taken from SFUSD COVID-19 Dashboard</a>
     <canvas id="covid_graph" width="700" height="700"></canvas>
     <script>
         var chart = document.getElementById("covid_graph");
