@@ -1,20 +1,24 @@
 h1 {
-   margin: 3%;
+   margin: 2.5vw;
+   font-size: 3.8vw;
+   text-align: center;
 }
 
 a {
-    margin-left: 3%;
+    margin-left: 2.5vw;
+    font-size: 1.5vw;
 }
 
 .style-table {
-    margin-left: 3%;
+    margin-left: 2.5vw;
     margin-bottom: 3%;
-    width: 60vw;
+    width: 95vw;
     height: 50vh;
     overflow: auto;
     text-align: center;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    font-size: 1.2vw;
 }
 
 .style-table::-webkit-scrollbar {
@@ -28,11 +32,11 @@ a {
     -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
 }
 
-.vertical-scrollable > tbody > tr > td{
-      position: absolute;
-      width: 50%;
-}
-
 #covid_graph {
     margin: 5%;
+}
+
+.chart-container {
+    height: 50vh;
+    width: 90vw;
 }
