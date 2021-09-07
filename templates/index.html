@@ -18,7 +18,7 @@
             <th scope="col">Student/Family Self Reported</th>
             <th scope="col">COLOR Testing Reported</th>
             <th scope="col">Total Reported</th>
-            <th scope="col"># of New Cases</th>
+            <th scope="col">New Cases</th>
           </tr>
             {% for i in dict_list %}
                 <tr scope="row">
@@ -48,7 +48,7 @@
                     {% endfor %}
                 ],
                 datasets: [{
-                  label: "Number of Cases",
+                  label: "Number of Total Cases",
                   borderColor: "#3e95cd",
                   data: [
                     {% for i in graph_list %}
@@ -75,7 +75,7 @@
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: 'Number of Cases'
+                            labelString: 'Number of Total Cases'
                         }
                     }]
 
