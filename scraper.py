@@ -5,7 +5,6 @@ import csv
 import re
 import schedule
 import time
-import pandas as pd
 
 URL = "https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard"
 
@@ -56,7 +55,7 @@ def job():
         print("Data not updated yet for today.")
 
 
-schedule.every().day.at('22:00').do(job)
+schedule.every().day.at('23:00').do(job)
 
 while True:
     schedule.run_pending()
