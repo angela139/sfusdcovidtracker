@@ -56,7 +56,7 @@ def job():
         print("Data not updated yet for today.")
 
 
-schedule.every().day.at('19:39').do(job)
+schedule.every().day.at('22:00').do(job)
 
 while True:
     schedule.run_pending()
