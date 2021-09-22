@@ -15,7 +15,6 @@ def index():
         graph_data = list(data)
         reverse_data = list(reversed(graph_data))
 
-    graph_data_count = len(list(graph_data))
     count = len(list(reverse_data))
 
     if len(dict_list) > 0:

@@ -57,10 +57,12 @@ def job():
         with open("SFUSD_Covid_Cases.csv", 'a') as obj:
             csv_writer = csv.writer(obj)
             csv_writer.writerow(overall_table_data)
-        with open("SFUSD_Schools_Cases.csv", 'a') as obj:
-            csv_writer = csv.writer(obj)
-            csv_writer.writerow(schools_table_data)
+        with open("SFUSD_Schools_Cases.csv", 'a') as obj_two:
+            csv_writer_two = csv.writer(obj_two)
+            csv_writer_two.writerow(schools_table_data)
         print("Data updated.")
+        obj.close()
+        obj_two.close()
     else:
         print("Data not updated yet for today.")
 
