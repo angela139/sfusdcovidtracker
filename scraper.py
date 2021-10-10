@@ -7,69 +7,79 @@ import schedule
 import time
 import psycopg2
 
+t_host = "localhost"
+t_port = "5432"
+t_dbname = "sfusd_covid_cases"
+t_user = "hurricane"
+t_pw = "a123976904"
 URL = "https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard"
 
+db_conn = psycopg2.connect(host=t_host, port=t_port, dbname=t_dbname,
+                           user=t_user, password=t_pw)
+db_cursor = db_conn.cursor()
 
-def job():
-    # Getting new data for csv
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.text, 'html.parser')
-    overall_reported = soup.find_all("table")[0]
-    school_reported = soup.find_all("table")[2]
+# Getting new data for csv
+page = requests.get(URL)
+soup = BeautifulSoup(page.text, 'html.parser')
+overall_reported = soup.find_all("table")[0]
+school_reported = soup.find_all("table")[2]
 
-    # Date the website updated with new data
-    web_date = soup.find_all("em")[0].get_text()
+# Date the website updated with new data
+web_date = soup.find_all("em")[0].get_text()
 
-    # Array with month, day, time
-    updated_date = web_date[14:].replace("@", "").replace(",", "")
-    formatted_date = datetime.datetime.strptime(updated_date, '%B %d %Y  %H:%M').strftime('%m-%d-%Y %I:%M %p')
+# Array with month, day, time
+updated_date = web_date[14:].replace("@", "").replace(",", "")
+formatted_date = datetime.datetime.strptime(updated_date, '%B %d %Y  %H:%M').strftime('%m-%d-%Y %I:%M %p')
 
-    # Array for overall cases table data, first index is date
-    overall_table_data = [formatted_date]
-    schools_table_data = [formatted_date]
+# Array for overall cases table data, first index is date
+overall_table_data = [formatted_date]
+schools_table_data = [formatted_date]
 
-    # Adds data from table on website to array
-    for rows in overall_reported.find_all("tr")[1:]:
-        num = rows.find_all("td")
-        case_num = re.sub("[^0-9]", "", num[1].get_text())
-        overall_table_data.append(case_num)
+# Adds data from table on website to array
+for rows in overall_reported.find_all("tr")[1:]:
+    num = rows.find_all("td")
+    case_num = re.sub("[^0-9]", "", num[1].get_text())
+    overall_table_data.append(case_num)
 
-    for rows in school_reported.find_all("tr")[2:6]:
-        num = rows.find_all("td")
-        case_num = re.sub("[^0-9]", "", num[1].get_text())
-        schools_table_data.append(case_num)
+for rows in school_reported.find_all("tr")[2:6]:
+    num = rows.find_all("td")
+    case_num = re.sub("[^0-9]", "", num[1].get_text())
+    schools_table_data.append(case_num)
 
-    # Opens csv to get previous data to calculate # of new cases
-    with open("SFUSD_Covid_Cases.csv", "r") as csv_file:
-        for line in csv_file:
-            pass
-        last_row = line
-        last_row_array = last_row.split(',')
+previous_cases_query = db_cursor.execute(""" SELECT total FROM covid_cases_table
+ORDER BY "time" DESC LIMIT 1 """)
+p_cases = db_cursor.fetchone()
+previous_updated_query = db_cursor.execute(""" SELECT time FROM covid_cases_table
+ORDER BY "time" DESC LIMIT 1 """)
+p_updated = db_cursor.fetchone()
 
-    # Number of new cases
-    new_cases = int(overall_table_data[4]) - int(last_row_array[4])
+previous_cases = ''.join(p_cases)
+previous_updated = ''.join(p_updated)
 
-    # Add number of new cases to overall_table_data array
-    overall_table_data.append(str(new_cases))
+# Number of new cases
+new_cases = int(overall_table_data[4]) - int(previous_cases)
 
-    # Putting new data into csv if data was updated
-    if last_row_array[0] != formatted_date:
-        with open("SFUSD_Covid_Cases.csv", 'a') as obj:
-            csv_writer = csv.writer(obj)
-            csv_writer.writerow(overall_table_data)
-        with open("SFUSD_Schools_Cases.csv", 'a') as obj_two:
-            csv_writer_two = csv.writer(obj_two)
-            csv_writer_two.writerow(schools_table_data)
-        print("Data updated.")
-        obj.close()
-        obj_two.close()
-    else:
-        print("Data not updated yet for today.")
+# Add number of new cases to overall_table_data array
+overall_table_data.append(str(new_cases))
 
 
+if previous_updated != formatted_date:
+    covid_sql_query = """ INSERT INTO covid_cases_table(time, staff, student, color, total, new) """
+    db_cursor.execute(covid_sql_query, overall_table_data)
+    school_sql_query = """ INSERT INTO school_cases_table(time, pk5, pk8, middle, high) """
+    db_cursor.execute(school_sql_query, schools_table_data)
+    db_conn.commit()
+    db_cursor.close()
+    db_conn.close()
+else:
+    print("Data not updated yet for today.")
+
+
+"""
 schedule.every().day.at('23:00').do(job)
 
 while True:
     schedule.run_pending()
     time.sleep(1)
+    """
 
