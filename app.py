@@ -1,49 +1,46 @@
 from flask import Flask
 from flask import render_template
 import psycopg2
-import csv
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+t_host = "localhost"
+t_port = "5432"
+t_dbname = "sfusd_covid_cases"
+t_user = os.getenv('USERNAME')
+t_pw = os.getenv('PASSWORD')
 
 dict_list = []
 graph_list = []
+
+db_conn = psycopg2.connect(host=t_host, port=t_port, dbname=t_dbname,
+                           user=t_user, password=t_pw)
+db_cursor = db_conn.cursor()
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    with open('SFUSD_Covid_Cases.csv') as csv_file:
-        data = csv.reader(csv_file)
-        graph_data = list(data)
-        reverse_data = list(reversed(graph_data))
+    # Queries database for cases data
 
-    count = len(list(reverse_data))
+    db_cursor.execute(""" SELECT * FROM covid_cases_table ORDER BY "time" DESC """)
+    cases_rows = db_cursor.fetchall()
 
-    if len(dict_list) > 0:
-        pass
+    # Tuple for dictionary keys
+    header_tuple = ("time", "staff", "student", "color", "total", "new_cases")
 
-    else:
-        for row in range(count):
-            if row != (count - 1):
-                dict_list.append({
-                    "time": reverse_data[row][0],
-                    "staff": reverse_data[row][1],
-                    "student": reverse_data[row][2],
-                    "color": reverse_data[row][3],
-                    "total": reverse_data[row][4],
-                    "new_cases": reverse_data[row][5]
-                })
-            if row != 0:
-                graph_list.append({
-                    "time": graph_data[row][0],
-                    "staff": graph_data[row][1],
-                    "student": graph_data[row][2],
-                    "color": graph_data[row][3],
-                    "total": graph_data[row][4],
-                    "new_cases": graph_data[row][5]
-                })
-            else:
-                print("Category row")
-    csv_file.close()
+    # Adds each value in the tuple as a value in dictionary and puts it into an array
+    for row in cases_rows:
+        result = dict(zip(header_tuple, row))
+        dict_list.append(result)
+
+    for row in reversed(cases_rows):
+        result = dict(zip(header_tuple, row))
+        graph_list.append(result)
+
     return render_template("index.html", dict_list=dict_list, graph_list=graph_list)
 
 
