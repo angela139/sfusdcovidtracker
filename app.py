@@ -3,8 +3,7 @@ from flask import render_template
 import psycopg2
 import os
 
-# DATABASE_URL = os.environ['DATABASE_URL']
-DATABASE_URL = "postgres://pblaqvsesglkhk:62b319e0c2378cdd1365e7a7208380f45a08012683684055a726d1dd47311e3e@ec2-3-226-165-74.compute-1.amazonaws.com:5432/dbp4jq9ebq8giu"
+DATABASE_URL = os.environ['DATABASE_URL']
 db_conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 db_cursor = db_conn.cursor()
 
