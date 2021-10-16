@@ -7,7 +7,8 @@ import time
 import psycopg2
 import os
 
-DATABASE_URL = os.environ['DATABASE_URL']
+# DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = "postgres://pblaqvsesglkhk:62b319e0c2378cdd1365e7a7208380f45a08012683684055a726d1dd47311e3e@ec2-3-226-165-74.compute-1.amazonaws.com:5432/dbp4jq9ebq8giu"
 URL = "https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard"
 
 db_conn = psycopg2.connect(DATABASE_URL, sslmode='require')

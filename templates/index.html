@@ -10,17 +10,18 @@
 </head>
 <body>
     <h1>Cumulative COVID Cases in SFUSD (since August 16)</h1>
+    <h3>Overall Data</h3>
     <div class="vertical-scrollable style-table table-responsive">
         <table class="table table-striped table-bordered">
           <tr class="table-primary">
-            <th scope="col">Time Updated</th>
-            <th scope="col">Staff Self Reported</th>
-            <th scope="col">Student/Family Self Reported</th>
-            <th scope="col">COLOR Testing Reported</th>
-            <th scope="col">Total Reported</th>
-            <th scope="col">New Cases</th>
+            <th scope="col" class="header">Time Updated</th>
+            <th scope="col" class="header">Staff Self Reported</th>
+            <th scope="col" class="header">Student/Family Self Reported</th>
+            <th scope="col" class="header">COLOR Testing Reported</th>
+            <th scope="col" class="header">Total Reported</th>
+            <th scope="col" class="header">New Cases</th>
           </tr>
-            {% for i in dict_list %}
+            {% for i in case_dict_list %}
                 <tr scope="row">
                     <td>{{ i["time"] }}</td>
                     <td>{{ i["staff"] }}</td>
@@ -31,6 +32,27 @@
                 </tr>
             {% endfor %}
         </table>
+    </div>
+    <h3>School-Specific Data</h3>
+    <div class="vertical-scrollable style-table table-responsive">
+    <table class="table table-striped table-bordered">
+          <tr class="table-primary">
+            <th scope="col" class="header">Time Updated</th>
+            <th scope="col" class="header">Elementary School</th>
+            <th scope="col" class="header">PK-8</th>
+            <th scope="col" class="header">Middle School</th>
+            <th scope="col" class="header">High School</th>
+          </tr>
+            {% for i in school_dict_list %}
+                <tr scope="row">
+                    <td>{{ i["time"] }}</td>
+                    <td>{{ i["pk5"] }}</td>
+                    <td>{{ i["pk8"] }}</td>
+                    <td>{{ i["middle"] }}</td>
+                    <td>{{ i["high"] }}</td>
+                </tr>
+            {% endfor %}
+    </table>
     </div>
     <a href="https://www.sfusd.edu/covid-19-response-updates-and-resources/health-and-safety-guidelines/when-someone-gets-sick/covid-19-testing-dashboard" target="_blank">
             Data taken from SFUSD COVID-19 Dashboard</a>
@@ -43,7 +65,7 @@
             type: "line",
             data: {
                 labels: [
-                    {% for i in graph_list %}
+                    {% for i in case_graph_list %}
                         "{{ i['time'] }}",
                     {% endfor %}
                 ],
@@ -51,7 +73,7 @@
                   label: "Number of Total Cases",
                   borderColor: "#3e95cd",
                   data: [
-                    {% for i in graph_list %}
+                    {% for i in case_graph_list %}
                        "{{ i['total'] }}",
                       {% endfor %}
                      ]

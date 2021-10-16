@@ -3,10 +3,8 @@ from flask import render_template
 import psycopg2
 import os
 
-dict_list = []
-graph_list = []
-
-DATABASE_URL = os.environ['DATABASE_URL']
+# DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = "postgres://pblaqvsesglkhk:62b319e0c2378cdd1365e7a7208380f45a08012683684055a726d1dd47311e3e@ec2-3-226-165-74.compute-1.amazonaws.com:5432/dbp4jq9ebq8giu"
 db_conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 db_cursor = db_conn.cursor()
 
@@ -15,8 +13,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # Queries database for cases data
+    # Arrays for holding case data
+    case_dict_list = []
+    case_graph_list = []
+    school_dict_list = []
 
+    # Resets list when page is refreshed since data is kept
+    if len(case_dict_list) > 0:
+        case_dict_list = []
+
+    # Queries database for cases data
     db_cursor.execute(""" SELECT * FROM covid_cases_table ORDER BY "time" DESC """)
     cases_rows = db_cursor.fetchall()
 
@@ -26,13 +32,25 @@ def index():
     # Adds each value in the tuple as a value in dictionary and puts it into an array
     for row in cases_rows:
         result = dict(zip(header_tuple, row))
-        dict_list.append(result)
+        case_dict_list.append(result)
 
     for row in reversed(cases_rows):
         result = dict(zip(header_tuple, row))
-        graph_list.append(result)
+        case_graph_list.append(result)
 
-    return render_template("index.html", dict_list=dict_list, graph_list=graph_list)
+    db_cursor.execute(""" SELECT * FROM school_cases_table ORDER BY "time" DESC """)
+    school_rows = db_cursor.fetchall()
+
+    # Tuple for dictionary keys
+    school_header = ("time", "pk5", "pk8", "middle", "high")
+
+    # Adds each value in the tuple as a value in dictionary and puts it into an array
+    for row in school_rows:
+        result = dict(zip(school_header, row))
+        school_dict_list.append(result)
+
+    return render_template("index.html", case_dict_list=case_dict_list, case_graph_list=case_graph_list,
+                           school_dict_list=school_dict_list)
 
 
 if __name__ == "__main__":

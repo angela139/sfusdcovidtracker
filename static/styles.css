@@ -72,3 +72,12 @@
     height: 50vh;
     width: 90vw;
 }
+
+.header {
+    position: sticky;
+    top: 0;
+}
+
+h3 {
+    text-align: center;
+}
