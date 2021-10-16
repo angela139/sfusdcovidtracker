@@ -2,21 +2,12 @@ from flask import Flask
 from flask import render_template
 import psycopg2
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-t_host = "localhost"
-t_port = "5432"
-t_dbname = "sfusd_covid_cases"
-t_user = os.getenv('USERNAME')
-t_pw = os.getenv('PASSWORD')
 
 dict_list = []
 graph_list = []
 
-db_conn = psycopg2.connect(host=t_host, port=t_port, dbname=t_dbname,
-                           user=t_user, password=t_pw)
+DATABASE_URL = os.environ['DATABASE_URL']
+db_conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 db_cursor = db_conn.cursor()
 
 app = Flask(__name__)
