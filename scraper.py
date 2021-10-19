@@ -2,8 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import re
-import schedule
-import time
 import psycopg2
 import os
 
