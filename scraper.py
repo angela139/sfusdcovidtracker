@@ -73,10 +73,3 @@ def job():
         db_conn.close()
     else:
         print("Data not updated yet for today.")
-
-
-schedule.every().day.at('23:00').do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
