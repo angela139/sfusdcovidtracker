@@ -68,6 +68,10 @@
     margin: 5%;
 }
 
+#new_cases_graph {
+    margin: 5%;
+}
+
 .chart-container {
     height: 50vh;
     width: 90vw;
