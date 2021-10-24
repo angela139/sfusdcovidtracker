@@ -58,6 +58,7 @@
             Data taken from SFUSD COVID-19 Dashboard</a>
     <div class="chart-container">
         <canvas id="covid_graph"></canvas>
+        <canvas id="new_cases_graph"></canvas>
     </div>
     <script>
         var chart = document.getElementById("covid_graph");
@@ -98,6 +99,52 @@
                         scaleLabel: {
                             display: true,
                             labelString: 'Number of Total Cases'
+                        }
+                    }]
+
+                }
+            }
+
+        });
+
+        var new_cases_chart = document.getElementById("new_cases_graph");
+        var line_graph = new Chart(new_cases_chart, {
+            type: "line",
+            data: {
+                labels: [
+                    {% for i in case_graph_list %}
+                        "{{ i['time'] }}",
+                    {% endfor %}
+                ],
+                datasets: [{
+                  label: "Number of New Cases",
+                  borderColor: "#3e95cd",
+                  data: [
+                    {% for i in case_graph_list %}
+                       "{{ i['new_cases'] }}",
+                      {% endfor %}
+                     ]
+                  }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    mode: 'x-axis'
+                },
+                scales: {
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Time'
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }],
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number of New Cases'
                         }
                     }]
 
